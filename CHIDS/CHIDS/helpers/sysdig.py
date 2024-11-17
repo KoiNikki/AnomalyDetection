@@ -37,6 +37,14 @@ class Sysdig:
         args = list(evt_info[7:])
         evt = [timestamp, syscall, args]
         return evt
+    
+    def _sysdig_output_file(self, raw_evt):
+        evt_info = raw_evt.split()
+        timestamp = str(evt_info[1][:-3])
+        syscall = evt_info[6]
+        args = list(evt_info[7:])
+        evt = [timestamp, syscall, args]
+        return evt
 
     def process_scap(self, scap):
         sysdig_evts = []
@@ -60,4 +68,35 @@ class Sysdig:
 
         else:
             raise CorruptedFile(scap)
+        
+    def process_file(self, file: str) -> pd.DataFrame:  
+        """  
+        Process a single already-processed (sysdig read) file and convert it into a DataFrame.  
+        """  
+        sysdig_evts = []  
+
+        try:  
+            if os.path.getsize(file) > 0:  
+  
+                with open(file, 'r') as f:  
+                    for line in f:  
+                        raw_evt = line.strip()  
+                        noise = [x for x in NOISY_SCAP_METADATA if x in raw_evt]  
+
+                        if not noise and len(raw_evt) > EVENT_LENGTH:  
+                            sysdig_evts.append(self._sysdig_output_file(raw_evt))  
+
+                file_df = pd.DataFrame(sysdig_evts, columns=COLUMNS)  
+
+                if file_df.empty:  
+                    raise NoSyscallsFound(file)  
+
+                return file_df  
+
+            else:  
+                raise CorruptedFile(file)  
+
+        except Exception as e:  
+            print(f"Error processing file {file}: {e}")  
+            return pd.DataFrame()
 

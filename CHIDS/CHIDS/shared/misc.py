@@ -45,6 +45,12 @@ def prepare_scaps(scaps_dir):
         scaps.append(''.join(os.path.join(scaps_dir, scap)))
     return scaps
 
+def prepare_files(files_dir):
+    files = []
+    for file in os.listdir(files_dir):
+        files.append(''.join(os.path.join(files_dir, file)))
+    return files
+
 
 def load_pickled_file(file):
     with open(file, 'rb') as f:

@@ -10,8 +10,8 @@ from ..utils.anomaly_vector import AnomalyVector
 from ..helpers.sysdig import Sysdig
 
 class Baseline:
-    def __init__(self, scaps):
-        self.scaps = scaps
+    def __init__(self, files):
+        self.files = files
 
     def _seen_syscalls(self, scaps_dfs):
         ss_obj = SeenSyscalls(scaps_dfs)
@@ -40,14 +40,25 @@ class Baseline:
         return all_anomaly_vectors
 
 
-    def _scaps_to_dfs(self):
-        pool = Pool()
-        Sysdig().process_scap(self.scaps[0])
-        all_scaps_dfs = pool.map(Sysdig().process_scap, self.scaps, chunksize=CHUNK_SIZE)
-        return all_scaps_dfs
+    # def _scaps_to_dfs(self):
+    #     pool = Pool()
+    #     Sysdig().process_scap(self.files[0])
+    #     all_scaps_dfs = pool.map(Sysdig().process_scap, self.files, chunksize=CHUNK_SIZE)
+    #     return all_scaps_dfs
+    
+    def _files_to_dfs(self):  
+        all_files_dfs = []  
+        
+        for file in self.files:  
+            file_df = Sysdig().process_file(file)  
+            
+            if not file_df.empty:  
+                all_files_dfs.append(file_df)  
+
+        return all_files_dfs
 
     def get_training_elements(self):
-        scaps_dfs = self._scaps_to_dfs()
+        scaps_dfs = self._files_to_dfs()
         seen_syscalls = self._seen_syscalls(scaps_dfs)
         seen_args = self._seen_args(scaps_dfs)
         traces = self._get_scaps_traces(scaps_dfs)

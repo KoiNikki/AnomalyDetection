@@ -167,3 +167,6 @@ Data/
 # output
 output/
 Output/
+
+# editor
+.vscode/
