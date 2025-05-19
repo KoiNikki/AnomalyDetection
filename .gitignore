@@ -170,3 +170,7 @@ Output/
 
 # editor
 .vscode/
+
+# datasets
+datasets/
+*.zip

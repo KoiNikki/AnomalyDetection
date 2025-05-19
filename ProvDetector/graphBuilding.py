@@ -31,10 +31,12 @@ def parse_log(log: str):
 
     # Flexible regex to capture key fields
     match = pattern_CBDS.search(log)
+    # if not match:
+    #     match = pattern_LIDDS.search(log)
+    #     if not match:
+    #         return None
     if not match:
-        match = pattern_LIDDS.search(log)
-        if not match:
-            return None
+        return None
 
     # Extract components from the log line
     evt_time = match.group("evt_time")

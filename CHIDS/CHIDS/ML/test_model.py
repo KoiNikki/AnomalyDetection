@@ -6,6 +6,7 @@ import pandas as pd
 from ..shared.constants import *
 from ..shared.misc import _format_input
 from keras.models import load_model
+from keras.losses import mean_squared_error as mse
 
 class Testing:
 
@@ -16,7 +17,7 @@ class Testing:
     def _get_reconstruction_loss(self, scap_anomaly_vectors):
         formatted_anomaly_vectors = _format_input(scap_anomaly_vectors, TRAINING_MODE=False)
         trace_anomaly_vectors = formatted_anomaly_vectors.reshape(formatted_anomaly_vectors.shape[0], 1, formatted_anomaly_vectors.shape[1])
-        modell = load_model(self.trained_model)
+        modell = load_model(self.trained_model, custom_objects={'mse': mse})
         trace_prediction = modell.predict(trace_anomaly_vectors, verbose=1)
         trace_prediction = trace_prediction.reshape(trace_prediction.shape[0], trace_prediction.shape[2])
         trace_anomaly_vectors = trace_anomaly_vectors.reshape(trace_anomaly_vectors.shape[0], trace_anomaly_vectors.shape[2])

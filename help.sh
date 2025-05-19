@@ -1,20 +1,25 @@
-#!/bin/bash  
+#!/bin/bash
 
-INPUT_DIR="/home/yichi/Ayane/AnomalyDetection/Data/CVE-2016-9962_"  
-OUTPUT_DIR="/home/yichi/Ayane/AnomalyDetection/Data/CVE-2016-9962"  
+base_dir="datasets/CB-DS-scap"
+output_dir="datasets/CB-DS"
 
-# 创建输出文件夹（如果不存在）  
-mkdir -p "$OUTPUT_DIR"  
+for scene_name_dir in "$base_dir"/*/; do
+  scene_name=$(basename "$scene_name_dir")
 
-for scap_file in "$INPUT_DIR"/*.scap; do  
-    # 获取文件名（不含扩展名）  
-    filename=$(basename -- "$scap_file")  
-    filename="${filename%.*}"  
+  for scap_file in "$scene_name_dir"/*.scap; do
+    [ -e "$scap_file" ] || continue
 
-    # 输出文件路径  
-    output_file="$OUTPUT_DIR/$filename.log"  
+    filename=$(basename "$scap_file" .scap)
+    log_dir="$output_dir/$scene_name"
+    log_file="$log_dir/$filename.log"
 
-    # 使用 sysdig 读取 scap 文件并输出到 log 文件  
-    sysdig -r "$scap_file" > "$output_file"  
-    echo "Processed $scap_file to $output_file"  
+    echo "Processing $scap_file -> $log_file"
+
+    mkdir -p "$log_dir"
+    sysdig -r "$scap_file" > "$log_file"
+
+    if [ $? -ne 0 ]; then
+      echo "Error processing $scap_file" >&2
+    fi
+  done
 done
