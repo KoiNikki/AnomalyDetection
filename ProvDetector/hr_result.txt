@@ -1,0 +1,26 @@
+150 25 2
+precision: 1.0  recall: 0.02  f1_score: 0.0392156862745098 accuracy: 0.51
+162.343523979187
+Execution time: 00:02:44
+150 25 2
+Traceback (most recent call last):
+  File "/root/AnomalyDetection/ProvDetector/run.py", line 163, in <module>
+    run(args.train_data, args.test_data_normal, args.test_data_malicious)
+  File "/root/AnomalyDetection/ProvDetector/run.py", line 130, in run
+    f1_score = (2 * precision * recall) / (precision + recall)
+               ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~
+ZeroDivisionError: float division by zero
+Execution time: 00:02:34
+150 25 2
+precision: 1.0  recall: 0.01  f1_score: 0.019801980198019802 accuracy: 0.505
+153.56780648231506
+Execution time: 00:02:36
+150 25 2
+Traceback (most recent call last):
+  File "/root/AnomalyDetection/ProvDetector/run.py", line 163, in <module>
+    run(args.train_data, args.test_data_normal, args.test_data_malicious)
+  File "/root/AnomalyDetection/ProvDetector/run.py", line 130, in run
+    f1_score = (2 * precision * recall) / (precision + recall)
+               ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~
+ZeroDivisionError: float division by zero
+Execution time: 00:02:31
